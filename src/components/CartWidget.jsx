@@ -1,6 +1,3 @@
-
-import ItemListConteiner from "./ItemListConteiner"
-
 function CartWidget() {
     return (
         <div>
