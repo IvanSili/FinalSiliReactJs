@@ -1,8 +1,20 @@
-function CartWidget() {
+import { Link } from "react-router-dom"
+import React, { useContext } from 'react'
+import { CartContext } from "../context/CartContext"
+
+const CartWidget = () => {
+
+const { cantidadEnCarrito } = useContext(CartContext);
+
+const cantidad = cantidadEnCarrito();
+const cantidadValida = isNaN(cantidad) ? 0 : cantidad;
+
     return (
-        <div>
+        <div className="flex">
+            <Link className="hover:text-[#FCC139] p-2 hover:uppercase" to="/carrito">            
             <img src="/image/carrito.png" alt="carrito" />
-            <p>0</p>
+            <span>{cantidadValida}</span>
+            </Link>
         </div>
     )
 }

@@ -1,31 +1,33 @@
 import { useEffect, useState } from "react";
-import { requestProduct } from "./RequestProduct.js";
 import ItemList from "./ItemList.jsx";
 import { useParams } from "react-router-dom";
-
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../firebase/fireBaseConfig.js";
 
 function ItemListConteiner(greeting) {
 
     const [productos, setProductos] = useState([])
-    const genres = useParams().genres;
+
+    const genre = useParams().genre;
 
 
     useEffect (() => {
-        requestProduct()
-            .then((res) => {
-                if (genres) {
-                    const filteredProducts = res.filter((movie) =>
-                        movie.genres.toLowerCase().includes(genres.toLowerCase())
-                    );
-                    setProductos(filteredProducts);
-                } else {
-                    setProductos(res);
-                }
-            })
-    }, [genres])
+        const productosRef = collection(db, "productos");
+
+        const qu = genre ? query(productosRef, where("genre", "==", genre)) : productosRef
+
+        getDocs(qu)
+        .then((resp) => {
+            setProductos(
+                resp.docs.map((doc) => {
+                    return { ...doc.data(), id: doc.id,};
+                })
+            )
+        })
+    }, [genre])
 
     return (
-        <div className="flex gap-x-10 flex-wrap justify-evenly bg-[#1F4489] ">
+        <div className="flex gap-x-10 flex-wrap justify-evenly bg-[#b5b5b5] ">
             <h1 className="p-10 text-3xl">{greeting.texto}</h1>
             <ItemList productos={productos}/>
         </div>
